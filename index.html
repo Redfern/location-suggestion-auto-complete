@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Places Searchbox</title>
+  </head>
+  <body>
+    <input id="SearchBox" type="text" placeholder="Start by typing a location..." style="width:500px;">
+    <div id="results">
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=INPUT-YOUR-KEY-HERE&libraries=places"
+         async defer></script>
+         <script type="text/javascript">
+           $(document).ready(function() {
+             // Set the default bounds to the UK
+             var defaultBounds = new google.maps.LatLngBounds(
+               new google.maps.LatLng(49.383639452689664, -17.39866406249996),
+               new google.maps.LatLng(59.53530451232491, 8.968523437500039));
+
+           var options = {
+             bounds: defaultBounds,
+             // the type of location we want to return
+             types: ['locality', 'postal_code', 'sublocality', 'country', 'administrative_area_level_1', 'administrative_area_level_2'],
+             // the country to return results, the bounds above seemed to also be needed and not just this though
+             // this isn't 100% though and is just a suggestion to first look in gb
+             componentRestrictions: {country: 'gb'}
+           };
+           var input = document.getElementById('SearchBox');
+           var searchBox = new google.maps.places.SearchBox(input, options);
+
+             // Listen for the event fired when the user selects a prediction and retrieve
+             // more details for that place.
+             searchBox.addListener('places_changed', function() {
+               var places = searchBox.getPlaces();
+
+               if (places.length == 0) {
+                 return;
+               }
+
+                 var name = places[0].name;
+                 var location = places[0].geometry.location;
+
+                 // output the location to the page
+                 $("<h1>" + name + "</h2>").appendTo("#results");
+                 $("<div><b>Latitude: </b>" + location.lat() + "</div>").appendTo("#results");
+                 $("<div><b>Longitude: </b>" + location.lng() + "</div>").appendTo("#results");
+             });
+           });
+         </script>
+  </body>
+</html>
